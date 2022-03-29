@@ -1,0 +1,1 @@
+# Homework for PyQT and Databases course
