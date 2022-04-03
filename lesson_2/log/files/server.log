@@ -47,3 +47,26 @@
 2022-04-03 09:24:15,022 DEBUG decorators Function process_client_message was executed in 0.0 s.
 2022-04-03 09:24:15,024 DEBUG decorators Function process_client_message was invoked from read_requests
 2022-04-03 09:24:18,074 INFO server Client 488 ('127.0.0.1', 56828) was disconnected.
+2022-04-03 13:35:34,765 INFO server Server is running on localhost:7777
+2022-04-03 13:36:31,344 INFO server Server is running on localhost:7777
+2022-04-03 13:36:55,157 INFO server Server is running on localhost:7777
+2022-04-03 13:52:45,816 INFO server Server is running on localhost:7777
+2022-04-03 13:53:32,865 INFO server Server is running on localhost:7777
+2022-04-03 13:53:56,913 INFO server Server is running on localhost:7777
+2022-04-03 13:54:18,295 INFO server Server is running on localhost:7777
+2022-04-03 13:55:16,442 INFO server Server is running on localhost:7777
+2022-04-03 13:58:34,956 INFO server Server is running on localhost:7777
+2022-04-03 14:06:30,551 INFO server Server is running on localhost:7777
+2022-04-03 14:12:18,532 DEBUG server New client: ('127.0.0.1', 56525)
+2022-04-03 14:12:18,740 DEBUG decorators Function process_client_message was executed in 0.0 s.
+2022-04-03 14:12:18,764 DEBUG decorators Function process_client_message was invoked from read_requests
+2022-04-03 14:23:53,431 INFO server Client 324 ('127.0.0.1', 56525) was disconnected.
+2022-04-03 14:41:12,649 INFO server Server is running on localhost:7777
+2022-04-03 14:42:43,181 INFO server Server is running on localhost:7777
+2022-04-03 14:42:54,614 DEBUG server New client: ('127.0.0.1', 57203)
+2022-04-03 14:42:54,829 DEBUG decorators Function process_client_message was executed in 0.0 s.
+2022-04-03 14:42:54,851 DEBUG decorators Function process_client_message was invoked from read_requests
+2022-04-03 14:43:00,765 DEBUG decorators Function process_client_message was executed in 0.0 s.
+2022-04-03 14:43:00,766 DEBUG decorators Function process_client_message was invoked from read_requests
+2022-04-03 14:43:00,766 DEBUG server Sending a message {'action': 'msg', 'time': 'Sun Apr  3 14:43:00 2022\n', 'type': 'status', 'user': {'account_name': 'guest', 'status': 'online'}, 'to': 'guest', 'msg': 'q', 'response': 200} to ('127.0.0.1', 57203)
+2022-04-03 14:43:03,003 INFO server Client 300 ('127.0.0.1', 57203) was disconnected.

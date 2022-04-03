@@ -4,18 +4,21 @@ import select
 import argparse
 
 from common.utils import send_message, get_message
-from common.errors import UnsafePortError
 from common.variables import *
 from common.decorators import log
-from log import server_log_config
+from metaclasses import ServerVerifier
+from lesson_2.descs import Port
 
 logger = logging.getLogger('server')
 
 
-class Server:
+class Server(metaclass=ServerVerifier):
+    port = Port()
+
     def __init__(self, host: str = '127.0.0.1', port: int = 8888):
         self._host = host
-        self._port = port
+        Server.port = port
+        self._port = Server.port
         self.clients = []
 
     @log
@@ -118,9 +121,6 @@ def main():
     args = parser.parse_args()
     host = args.a
     port = int(args.p)
-    # if not 1024 < port < 65536:
-    #     logger.critical('Please, specify safe port (1024-65536)')
-    #     raise UnsafePortError
     server = Server(host, port)
     server.run_main_loop()
 
