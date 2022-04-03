@@ -1,0 +1,49 @@
+2022-04-03 08:56:25,909 INFO server Server is running on localhost:7777
+2022-04-03 08:56:34,496 DEBUG server New client: ('127.0.0.1', 56592)
+2022-04-03 08:56:34,701 DEBUG decorators Function process_client_message was executed in 0.0 s.
+2022-04-03 08:56:34,723 DEBUG decorators Function process_client_message was invoked from read_requests
+2022-04-03 08:56:43,738 DEBUG server New client: ('127.0.0.1', 56595)
+2022-04-03 08:56:43,949 DEBUG decorators Function process_client_message was executed in 0.0 s.
+2022-04-03 08:56:43,950 DEBUG decorators Function process_client_message was invoked from read_requests
+2022-04-03 08:56:56,995 DEBUG decorators Function process_client_message was executed in 0.0 s.
+2022-04-03 08:56:56,996 DEBUG decorators Function process_client_message was invoked from read_requests
+2022-04-03 08:56:56,997 DEBUG server Sending a message {'action': 'msg', 'time': 'Sun Apr  3 08:56:56 2022\n', 'type': 'status', 'user': {'account_name': 'guest', 'status': 'online'}, 'to': 'guest', 'msg': 'hello guest', 'response': 200} to ('127.0.0.1', 56595)
+2022-04-03 08:57:09,604 INFO server Client 468 ('127.0.0.1', 56595) was disconnected.
+2022-04-03 08:57:49,595 DEBUG server New client: ('127.0.0.1', 56609)
+2022-04-03 08:57:49,808 DEBUG decorators Function process_client_message was executed in 0.0 s.
+2022-04-03 08:57:49,809 DEBUG decorators Function process_client_message was invoked from read_requests
+2022-04-03 08:58:00,597 DEBUG decorators Function process_client_message was executed in 0.0 s.
+2022-04-03 08:58:00,598 DEBUG decorators Function process_client_message was invoked from read_requests
+2022-04-03 08:58:00,599 DEBUG server [WinError 10054] Удаленный хост принудительно разорвал существующее подключение
+2022-04-03 08:58:00,599 INFO server Client 464 ('127.0.0.1', 56609) was disconnected.
+2022-04-03 08:58:14,393 DEBUG server New client: ('127.0.0.1', 56613)
+2022-04-03 08:58:14,596 DEBUG decorators Function process_client_message was executed in 0.0 s.
+2022-04-03 08:58:14,597 DEBUG decorators Function process_client_message was invoked from read_requests
+2022-04-03 08:58:37,247 DEBUG decorators Function process_client_message was executed in 0.0 s.
+2022-04-03 08:58:37,248 DEBUG decorators Function process_client_message was invoked from read_requests
+2022-04-03 08:58:37,248 DEBUG server Sending a message {'action': 'msg', 'time': 'Sun Apr  3 08:58:37 2022\n', 'type': 'status', 'user': {'account_name': 'guest', 'status': 'online'}, 'to': 'user_1', 'msg': 'hello user', 'response': 200} to ('127.0.0.1', 56613)
+2022-04-03 08:58:54,952 INFO server Client 464 ('127.0.0.1', 56613) was disconnected.
+2022-04-03 08:59:06,999 INFO server Client 452 ('127.0.0.1', 56592) was disconnected.
+2022-04-03 09:10:12,925 INFO server Server is running on localhost:7777
+2022-04-03 09:10:20,484 DEBUG server New client: ('127.0.0.1', 56756)
+2022-04-03 09:10:20,697 DEBUG decorators Function process_client_message was executed in 0.0 s.
+2022-04-03 09:10:20,718 DEBUG decorators Function process_client_message was invoked from read_requests
+2022-04-03 09:10:42,906 DEBUG decorators Function process_client_message was executed in 0.0 s.
+2022-04-03 09:10:42,907 DEBUG decorators Function process_client_message was invoked from read_requests
+2022-04-03 09:10:42,908 DEBUG server Sending a message {'action': 'msg', 'time': 'Sun Apr  3 09:10:42 2022\n', 'type': 'status', 'user': {'account_name': 'guest', 'status': 'online'}, 'to': 'guest', 'msg': 'hello', 'response': 200} to ('127.0.0.1', 56756)
+2022-04-03 09:10:51,026 INFO server Client 468 ('127.0.0.1', 56756) was disconnected.
+2022-04-03 09:21:52,506 DEBUG server New client: ('127.0.0.1', 56816)
+2022-04-03 09:21:52,722 DEBUG decorators Function process_client_message was executed in 0.0 s.
+2022-04-03 09:21:52,724 DEBUG decorators Function process_client_message was invoked from read_requests
+2022-04-03 09:21:59,226 DEBUG decorators Function process_client_message was executed in 0.0 s.
+2022-04-03 09:21:59,227 DEBUG decorators Function process_client_message was invoked from read_requests
+2022-04-03 09:21:59,227 DEBUG server Sending a message {'action': 'msg', 'time': 'Sun Apr  3 09:21:59 2022\n', 'type': 'status', 'user': {'account_name': 'guest', 'status': 'online'}, 'to': 'guest', 'msg': 'gue', 'response': 200} to ('127.0.0.1', 56816)
+2022-04-03 09:22:10,013 INFO server Client 480 ('127.0.0.1', 56816) was disconnected.
+2022-04-03 09:22:19,682 DEBUG server New client: ('127.0.0.1', 56819)
+2022-04-03 09:22:19,892 DEBUG decorators Function process_client_message was executed in 0.0 s.
+2022-04-03 09:22:19,893 DEBUG decorators Function process_client_message was invoked from read_requests
+2022-04-03 09:22:21,928 INFO server Client 480 ('127.0.0.1', 56819) was disconnected.
+2022-04-03 09:24:14,818 DEBUG server New client: ('127.0.0.1', 56828)
+2022-04-03 09:24:15,022 DEBUG decorators Function process_client_message was executed in 0.0 s.
+2022-04-03 09:24:15,024 DEBUG decorators Function process_client_message was invoked from read_requests
+2022-04-03 09:24:18,074 INFO server Client 488 ('127.0.0.1', 56828) was disconnected.
