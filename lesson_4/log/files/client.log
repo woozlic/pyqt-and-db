@@ -1,0 +1,35 @@
+2022-04-03 08:56:34,701 INFO client Status: Online!
+2022-04-03 08:56:43,949 INFO client Status: Online!
+2022-04-03 08:57:49,808 INFO client Status: Online!
+2022-04-03 08:58:14,596 INFO client Status: Online!
+2022-04-03 09:10:20,697 INFO client Status: Online!
+2022-04-03 09:21:52,722 INFO client Status: Online!
+2022-04-03 09:22:19,892 INFO client Status: Online!
+2022-04-03 09:24:15,022 INFO client Status: Online!
+2022-04-03 14:12:18,740 INFO client Status: Online!
+2022-04-03 14:28:31,612 ERROR client Can't connect to a server
+2022-04-03 14:30:02,733 ERROR client Can't connect to a server
+2022-04-03 14:42:54,829 INFO client Status: Online!
+2022-04-09 21:54:45,980 INFO client Status: Online!
+2022-04-09 21:58:38,117 INFO client Status: Online!
+2022-04-09 22:01:15,236 INFO client Status: Online!
+2022-04-09 22:01:31,059 INFO client Status: Online!
+2022-04-09 22:03:05,199 INFO client Status: Online!
+2022-04-09 22:09:37,280 INFO client Status: Online!
+2022-04-09 22:10:34,435 INFO client Status: Online!
+2022-04-09 22:18:30,270 ERROR client Error occured by attempting to log in
+Traceback (most recent call last):
+  File "C:\Users\1\PycharmProjects\pyqt-and-db\lesson_4\client.py", line 133, in main
+    answer = get_message(s)
+  File "C:\Users\1\PycharmProjects\pyqt-and-db\lesson_4\common\utils.py", line 26, in get_message
+    raise ValueError
+ValueError
+2022-04-09 22:18:30,271 ERROR client 
+2022-04-09 22:18:56,265 INFO client Status: Online!
+2022-04-09 22:20:37,934 INFO client Status: Online!
+2022-04-09 22:22:23,233 INFO client Status: Online!
+2022-04-09 22:23:02,760 INFO client Status: Online!
+2022-04-09 22:25:31,141 INFO client Status: Online!
+2022-04-09 22:31:31,896 INFO client Status: Online!
+2022-04-09 22:34:50,129 INFO client Status: Online!
+2022-04-09 22:35:06,747 INFO client Status: Online!
