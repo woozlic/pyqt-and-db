@@ -1,8 +1,14 @@
 import logging
+import sys
 from socket import socket, AF_INET, SOCK_STREAM, SOL_SOCKET, SO_REUSEADDR
+from threading import Thread, Lock
 import select
 import argparse
 
+from PyQt5.QtWidgets import QApplication
+from PyQt5.QtCore import QTimer
+
+from gui import StatisticsGui, ServerGui, SettingsGui
 from common.utils import send_message, get_message
 from common.variables import *
 from common.decorators import log
@@ -12,8 +18,11 @@ from server_database import ServerStorage
 
 logger = logging.getLogger('server')
 
+lock = Lock()
+new_client = True
 
-class Server(metaclass=ServerVerifier):
+
+class Server(Thread, metaclass=ServerVerifier):
     port = Port()
 
     def __init__(self, host: str = '127.0.0.1', port: int = 8888):
@@ -24,6 +33,7 @@ class Server(metaclass=ServerVerifier):
         self.clients = []
         self.names = {}
 
+        super().__init__()
 
     @log
     def process_client_message(self, message: dict, client) -> dict:
@@ -39,6 +49,9 @@ class Server(metaclass=ServerVerifier):
             send_message(client, message)
             client_host, client_port = client.getsockname()
             self.storage.user_login(username, client_host, client_port)
+            global new_client
+            with lock:
+                new_client = True
             return message
         elif "action" in message and message['action'] == 'msg'\
                 and 'time' in message and 'user' in message and 'to' in message:
@@ -101,7 +114,7 @@ class Server(metaclass=ServerVerifier):
                     sock.close()
                     self.clients.remove(sock)
 
-    def run_main_loop(self):
+    def run(self):
         with socket(AF_INET, SOCK_STREAM) as s:
             s.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
             s.bind((self._host, self._port))
@@ -137,8 +150,27 @@ def main():
     args = parser.parse_args()
     host = args.a
     port = int(args.p)
+
     server = Server(host, port)
-    server.run_main_loop()
+    server.daemon = True
+    server.start()
+    storage = ServerStorage()
+
+    main_window = QApplication(sys.argv)
+    server_gui = ServerGui()
+
+    def list_update():
+        global new_client
+        if new_client:
+            server_gui.update_from_db(storage)
+            with lock:
+                new_client = False
+
+    timer = QTimer()
+    timer.timeout.connect(list_update)
+    timer.start(500)
+
+    sys.exit(main_window.exec())
 
 
 if __name__ == '__main__':

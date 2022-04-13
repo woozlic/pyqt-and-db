@@ -77,6 +77,10 @@ class ServerStorage:
         self.session.add(new_login_row)
         self.session.commit()
 
+        new_active_row = self.ActiveClient(client=user.id, ip_address=address, port=port, login_time=datetime.now())
+        self.session.add(new_active_row)
+        self.session.commit()
+
     def user_logout(self, username):
         print(f'User {username} logged out')
         res = self.session.query(self.Client).filter_by(username=username)

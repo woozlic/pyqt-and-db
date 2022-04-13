@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>397</width>
-    <height>314</height>
+    <width>893</width>
+    <height>600</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>800</width>
+    <height>600</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>Statistics</string>
@@ -16,13 +22,16 @@
   <widget class="QWidget" name="verticalLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>-10</x>
-     <y>0</y>
-     <width>411</width>
-     <height>321</height>
+     <x>11</x>
+     <y>11</y>
+     <width>871</width>
+     <height>581</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
+    <property name="sizeConstraint">
+     <enum>QLayout::SetDefaultConstraint</enum>
+    </property>
     <item>
      <widget class="QLabel" name="label_active_clients">
       <property name="text">
@@ -35,6 +44,15 @@
     </item>
     <item>
      <widget class="QTableWidget" name="table_active_clients">
+      <property name="minimumSize">
+       <size>
+        <width>550</width>
+        <height>500</height>
+       </size>
+      </property>
+      <attribute name="horizontalHeaderStretchLastSection">
+       <bool>true</bool>
+      </attribute>
       <column>
        <property name="text">
         <string>Username</string>

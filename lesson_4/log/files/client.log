@@ -33,3 +33,20 @@ ValueError
 2022-04-09 22:31:31,896 INFO client Status: Online!
 2022-04-09 22:34:50,129 INFO client Status: Online!
 2022-04-09 22:35:06,747 INFO client Status: Online!
+2022-04-11 20:49:06,189 INFO client Status: Online!
+2022-04-11 20:52:24,776 INFO client Status: Online!
+2022-04-11 20:53:32,666 INFO client Status: Online!
+2022-04-11 21:30:58,407 INFO client Status: Online!
+2022-04-11 21:32:45,171 INFO client Status: Online!
+2022-04-11 21:35:29,800 INFO client Status: Online!
+2022-04-11 21:37:23,130 INFO client Status: Online!
+2022-04-11 21:40:34,366 INFO client Status: Online!
+2022-04-11 21:57:41,922 INFO client Status: Online!
+2022-04-11 21:58:27,367 ERROR client Error occured by attempting to log in
+Traceback (most recent call last):
+  File "C:\Users\1\PycharmProjects\pyqt-and-db\lesson_4\client.py", line 135, in main
+    answer = get_message(s)
+  File "C:\Users\1\PycharmProjects\pyqt-and-db\lesson_4\common\utils.py", line 26, in get_message
+    raise ValueError
+ValueError
+2022-04-11 21:58:27,368 ERROR client 

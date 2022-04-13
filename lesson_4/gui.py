@@ -1,39 +1,77 @@
-from server_gui import Ui_MainWindow
-from statistics import Ui_statistics
-from settings import Ui_settings
+from server_gui import Ui_ServerWindow
+from statistics_gui import Ui_statistics
+from settings_gui import Ui_settings
 import sys
 from PyQt5.QtWidgets import (
     QApplication, QDialog, QMainWindow, QMessageBox, QTableWidgetItem
 )
+from PyQt5.QtCore import pyqtSlot
+from datetime import datetime
 
 
 class StatisticsGui(QMainWindow, Ui_statistics):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)
+        self.initUi()
+
+    def initUi(self):
+        self.show()
 
 
 class SettingsGui(QMainWindow, Ui_settings):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)
+        self.initUi()
+
+    def initUi(self):
+        self.show()
+
     def accept(self):
         pass
+
     def reject(self):
         pass
 
 
-class ServerGui(QMainWindow, Ui_MainWindow):
+class ServerGui(QMainWindow, Ui_ServerWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)
-        self.update_table()
+        self.initUi()
         self.connect_signal_slots()
+        self.statistics_window = None
+        self.settings_window = None
 
-    def update_table(self):
-        rows = [['user', "127.0.0.1", "8000", "24.02.2022"], ['user', "127.0.0.1", "8000", "24.02.2022"]]
+    @pyqtSlot()
+    def open_statistics(self):
+        self.statistics_window = StatisticsGui()
+
+    @pyqtSlot()
+    def open_settings(self):
+        self.settings_window = SettingsGui()
+
+    def initUi(self):
+        self.menuClients_history.addAction('History', self.open_statistics)
+        self.menuServer_settings.addAction('Settings', self.open_settings)
+        self.show()
+
+    def update_from_db(self, db):
+        users = db.get_active_users_list()
+        print(users)
+        self.update_table(users)
+
+    def update_table(self, rows):
+        rows_count = self.table_active_clients.rowCount()
+        for row in range(rows_count):
+            self.table_active_clients.removeRow(row)
         for row in rows:
-            self.insert_row(*row)
+            username = row[0]
+            ip = row[1]
+            port = str(row[2])
+            login_time = row[3].strftime('%d.%m.%Y %H:%M:%S')
+            self.insert_row(username, ip, port, login_time)
 
     def insert_row(self, username: str, ip: str, port: str, login_time: str):
         row_position = self.table_active_clients.rowCount()
@@ -50,9 +88,8 @@ class ServerGui(QMainWindow, Ui_MainWindow):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     win = ServerGui()
-    win.show()
-    stat = StatisticsGui()
-    stat.show()
-    sett = SettingsGui()
-    sett.show()
+    # stat = StatisticsGui()
+    # stat.show()
+    # sett = SettingsGui()
+    # sett.show()
     sys.exit(app.exec())
