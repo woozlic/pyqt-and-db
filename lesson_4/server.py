@@ -157,12 +157,12 @@ def main():
     storage = ServerStorage()
 
     main_window = QApplication(sys.argv)
-    server_gui = ServerGui()
+    server_gui = ServerGui(storage)
 
     def list_update():
         global new_client
         if new_client:
-            server_gui.update_from_db(storage)
+            server_gui.update_from_db()
             with lock:
                 new_client = False
 

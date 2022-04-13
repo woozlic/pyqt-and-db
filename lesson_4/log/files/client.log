@@ -50,3 +50,13 @@ Traceback (most recent call last):
     raise ValueError
 ValueError
 2022-04-11 21:58:27,368 ERROR client 
+2022-04-13 10:32:03,579 ERROR client Can't connect to a server
+2022-04-13 10:32:03,810 ERROR client Can't connect to a server
+2022-04-13 15:35:21,023 ERROR client Can't connect to a server
+2022-04-13 15:35:21,222 ERROR client Can't connect to a server
+2022-04-13 15:45:54,114 ERROR client Can't connect to a server
+2022-04-13 15:45:54,352 ERROR client Can't connect to a server
+2022-04-13 16:06:40,178 INFO client Status: Online!
+2022-04-13 16:06:40,210 INFO client Status: Online!
+2022-04-13 16:07:22,129 INFO client Status: Online!
+2022-04-13 16:07:22,162 INFO client Status: Online!

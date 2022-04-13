@@ -15,6 +15,25 @@ class StatisticsGui(QMainWindow, Ui_statistics):
         self.setupUi(self)
         self.initUi()
 
+    def update_table(self, rows):
+        rows_count = self.table_history_clients.rowCount()
+        for row in range(rows_count):
+            self.table_history_clients.removeRow(row)
+        for row in rows:
+            username = row[0]
+            ip = row[2]
+            port = str(row[3])
+            login_time = row[1].strftime('%d.%m.%Y %H:%M:%S')
+            self.insert_row(username, ip, port, login_time)
+
+    def insert_row(self, username: str, ip: str, port: str, login_time: str):
+        row_position = self.table_history_clients.rowCount()
+        self.table_history_clients.insertRow(row_position)
+        self.table_history_clients.setItem(row_position, 0, QTableWidgetItem(username))
+        self.table_history_clients.setItem(row_position, 1, QTableWidgetItem(ip))
+        self.table_history_clients.setItem(row_position, 2, QTableWidgetItem(port))
+        self.table_history_clients.setItem(row_position, 3, QTableWidgetItem(login_time))
+
     def initUi(self):
         self.show()
 
@@ -36,17 +55,20 @@ class SettingsGui(QMainWindow, Ui_settings):
 
 
 class ServerGui(QMainWindow, Ui_ServerWindow):
-    def __init__(self, parent=None):
+    def __init__(self, db, parent=None):
         super().__init__(parent)
         self.setupUi(self)
         self.initUi()
         self.connect_signal_slots()
         self.statistics_window = None
         self.settings_window = None
+        self.db = db
 
     @pyqtSlot()
     def open_statistics(self):
         self.statistics_window = StatisticsGui()
+        login_history = self.db.get_login_history()
+        self.statistics_window.update_table(login_history)
 
     @pyqtSlot()
     def open_settings(self):
@@ -57,8 +79,8 @@ class ServerGui(QMainWindow, Ui_ServerWindow):
         self.menuServer_settings.addAction('Settings', self.open_settings)
         self.show()
 
-    def update_from_db(self, db):
-        users = db.get_active_users_list()
+    def update_from_db(self):
+        users = self.db.get_active_users_list()
         print(users)
         self.update_table(users)
 
@@ -87,9 +109,7 @@ class ServerGui(QMainWindow, Ui_ServerWindow):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    win = ServerGui()
-    # stat = StatisticsGui()
-    # stat.show()
+    # win = ServerGui()
+    stat = StatisticsGui()
     # sett = SettingsGui()
-    # sett.show()
     sys.exit(app.exec())

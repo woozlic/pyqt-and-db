@@ -10,12 +10,12 @@ PYTHON_PATH = sys.executable
 BASE_PATH = os.path.dirname(__file__)
 
 
-def get_subprocess(file, args_list=[]):
+def get_subprocess(file, args_list=()):
     time.sleep(0.2)
     if platform_name.startswith('win'):
-        cmd = [PYTHON_PATH, BASE_PATH+'\\'+file, *args_list]
+        cmd = [PYTHON_PATH, BASE_PATH + '\\' + file, *args_list]
         return subprocess.Popen(cmd)
-    cmd = f'{PYTHON_PATH} {BASE_PATH}/{file}{" ".join(args_list)}'
+    cmd = f'{PYTHON_PATH} {BASE_PATH}/{file} {" ".join(args_list)}'
     return subprocess.Popen(['gnome-terminal', "--disable-factory", "--", "bash", "-c", cmd], preexec_fn=os.setpgrp)
 
 

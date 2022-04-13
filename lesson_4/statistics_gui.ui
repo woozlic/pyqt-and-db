@@ -33,9 +33,9 @@
      <enum>QLayout::SetDefaultConstraint</enum>
     </property>
     <item>
-     <widget class="QLabel" name="label_active_clients">
+     <widget class="QLabel" name="label_history_clients">
       <property name="text">
-       <string>Active clients</string>
+       <string>History</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
@@ -43,7 +43,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QTableWidget" name="table_active_clients">
+     <widget class="QTableWidget" name="table_history_clients">
       <property name="minimumSize">
        <size>
         <width>550</width>
