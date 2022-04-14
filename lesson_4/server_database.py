@@ -54,13 +54,16 @@ class ServerStorage:
             return self.ip_address + ":" + self.port
 
     def __init__(self):
-        self.engine = create_engine('sqlite:///server_storage.db', echo=True, pool_recycle=7200)
+        self.engine = create_engine('sqlite:///server_storage.db', echo=False, pool_recycle=7200)
         Base.metadata.create_all(self.engine)
 
         Session = sessionmaker()
         self.session = Session(bind=self.engine)
         self.session.query(self.ActiveClient).delete()
         self.session.commit()
+
+    def is_user_exist(self, username):
+        return self.session.query(self.Client).filter_by(username=username).first()
 
     def user_login(self, username, address, port):
         print(f'User {username} from {address}:{port} logged in')

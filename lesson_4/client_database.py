@@ -47,14 +47,16 @@ class ClientStorage:
 
     def get_contacts(self):
         contacts = self.session.query(self.Contact).all()
-        return contacts
+        return [contact.username for contact in contacts]
+
+    def is_contact_exists(self, username):
+        contact_exists = self.session.query(self.Contact).filter_by(username=username).first()
+        return contact_exists
 
     def add_contact(self, username: str):
-        contact_exists = self.session.query(self.Contact).filter_by(username=username).first()
-        if contact_exists is not None:
-            contact = self.Contact(username=username)
-            self.session.add(contact)
-            self.session.commit()
+        contact = self.Contact(username=username)
+        self.session.add(contact)
+        self.session.commit()
 
     def delete_contact(self, username: str):
         self.session.query(self.Contact).filter_by(username=username).delete()

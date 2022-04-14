@@ -41,7 +41,7 @@ class Server(Thread, metaclass=ServerVerifier):
             "response": RESP_WRONG_REQUEST,
             "error": "Bad Request"
         }
-        if "action" in message and message['action'] == 'presence'\
+        if "action" in message and message['action'] == ACT_PRESENCE\
                 and 'time' in message and 'user' in message:
             message["response"] = RESP_OK
             username = message['user']['account_name']
@@ -53,7 +53,7 @@ class Server(Thread, metaclass=ServerVerifier):
             with lock:
                 new_client = True
             return message
-        elif "action" in message and message['action'] == 'msg'\
+        elif "action" in message and message['action'] == ACT_MESSAGE\
                 and 'time' in message and 'user' in message and 'to' in message:
             if message['to'] not in self.names.keys():
                 answer = {
@@ -72,6 +72,24 @@ class Server(Thread, metaclass=ServerVerifier):
             self.clients.remove(client_sock)
             del self.names[username]
             client_sock.close()
+            return message
+        elif 'action' in message and message['action'] == ACT_GET_CONTACTS:
+            username = message['user_login']
+            if self.storage.is_user_exist(username):
+                message["response"] = 202
+            else:
+                message["response"] = 400
+            send_message(client, message)
+            return message
+        elif 'action' in message and message['action'] == ACT_ADD_CONTACT or message['action'] == ACT_DEL_CONTACT:
+            user_from = message['user_login']
+            user_to = message['user_id']
+            if self.storage.is_user_exist(user_from) and self.storage.is_user_exist(user_to) and user_to != user_from:
+                print(user_from, '->', user_to)
+                message["response"] = 200
+            else:
+                message["response"] = 400
+            send_message(client, message)
             return message
         else:
             logger.warning(f'Bad Request from {client.getpeername()}')
