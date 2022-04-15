@@ -29,6 +29,6 @@ class AddContactGui(QMainWindow, Ui_form_add_contact):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    # win = ChatGui()
-    add_contact = AddContactGui()
+    win = ChatGui()
+    # add_contact = AddContactGui()
     sys.exit(app.exec())

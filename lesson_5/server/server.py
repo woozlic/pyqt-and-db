@@ -8,9 +8,10 @@ import argparse
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtCore import QTimer
 
-from lesson_5.server.ui.gui import ServerGui
+from ui.gui import ServerGui
 
-sys.path.insert(0, '../')
+import os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from common.utils import send_message, get_message
 from common.variables import *
 from common.decorators import log
@@ -27,10 +28,10 @@ new_client = True
 class Server(Thread, metaclass=ServerVerifier):
     port = Port()
 
-    def __init__(self, host: str = '127.0.0.1', port: int = 8888):
+    def __init__(self, db_path, host: str = '127.0.0.1', port: int = 8888):
         self._host = host
         Server.port = port
-        self.storage = ServerStorage()
+        self.storage = ServerStorage(db_path)
         self._port = Server.port
         self.clients = []
         self.names = {}
@@ -65,6 +66,7 @@ class Server(Thread, metaclass=ServerVerifier):
                 send_message(client, answer)
                 return answer
             message["response"] = RESP_OK
+            send_message(client, message)
             return message
         elif "action" in message and message['action'] == 'exit'\
                 and 'time' in message and 'user' in message:
@@ -171,13 +173,14 @@ def main():
     host = args.a
     port = int(args.p)
 
-    server = Server(host, port)
+    current_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'server_storage.db')
+
+    server = Server(current_dir, host, port)
     server.daemon = True
     server.start()
-    storage = ServerStorage()
 
     main_window = QApplication(sys.argv)
-    server_gui = ServerGui(storage)
+    server_gui = ServerGui(ServerStorage(current_dir))
 
     def list_update():
         global new_client

@@ -1,3 +1,5 @@
+import os.path
+
 from sqlalchemy import create_engine, Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import declarative_base, sessionmaker
 from datetime import datetime
@@ -53,8 +55,8 @@ class ServerStorage:
         def __repr__(self):
             return self.ip_address + ":" + self.port
 
-    def __init__(self):
-        self.engine = create_engine('sqlite:///server_storage.db', echo=False, pool_recycle=7200)
+    def __init__(self, path):
+        self.engine = create_engine(f'sqlite:///{path}', echo=False, pool_recycle=7200)
         Base.metadata.create_all(self.engine)
 
         Session = sessionmaker()

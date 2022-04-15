@@ -2,6 +2,7 @@ import time
 from .variables import BYTES_RECV_SIZE
 import json
 import logging
+from datetime import datetime
 
 
 logger = logging.getLogger('server')
@@ -30,3 +31,7 @@ def get_message(sock, encoding='ascii') -> dict:
 def get_unix_time_str():
     unix_time_str = time.ctime(time.time()) + '\n'
     return unix_time_str
+
+
+def get_datetime_from_unix_str(unix_str: str):
+    return datetime.strptime(unix_str.strip(), "%a %b %d %H:%M:%S %Y")

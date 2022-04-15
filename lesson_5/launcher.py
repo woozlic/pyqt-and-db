@@ -16,6 +16,7 @@ def get_subprocess(file, args_list=()):
         cmd = [PYTHON_PATH, BASE_PATH + '\\' + file, *args_list]
         return subprocess.Popen(cmd)
     cmd = f'{PYTHON_PATH} {BASE_PATH}/{file} {" ".join(args_list)}'
+    print(cmd)
     return subprocess.Popen(['gnome-terminal', "--disable-factory", "--", "bash", "-c", cmd], preexec_fn=os.setpgrp)
 
 

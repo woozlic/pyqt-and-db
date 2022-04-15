@@ -1,13 +1,15 @@
+import datetime
 import logging
 import time
 from socket import AF_INET, SOCK_STREAM, socket
 import argparse
 import threading
 import sys
+import os
 
-sys.path.insert(0, '../')
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from common.variables import PORT, ACT_PRESENCE, HOST, ACT_MESSAGE, ACT_ADD_CONTACT, ACT_DEL_CONTACT, ACT_GET_CONTACTS
-from common.utils import get_unix_time_str, send_message, get_message
+from common.utils import get_unix_time_str, send_message, get_message, get_datetime_from_unix_str
 from client_database import ClientStorage
 import log.client_log_config
 from common.decorators import log
@@ -59,6 +61,20 @@ class ClientReader(threading.Thread):
                 if 'action' in answer and answer['action'] == 'msg' and 'user' in answer and 'to' in answer and \
                         answer['to'] == self.account_name:
                     print(f'NEW | From {answer["user"]["account_name"]} | {answer["msg"]}')
+                    text = answer['msg']
+                    timestamp = get_datetime_from_unix_str(answer['time'])
+                    logger.info(timestamp)
+                    from_ = answer['user']['account_name']
+                    to_ = answer['to']
+                    self.storage.create_message(text, timestamp, from_, to_)
+                elif 'action' in answer and answer['action'] == 'msg' and 'user' in answer and 'to' in answer and \
+                        answer['user']['account_name'] == self.account_name:
+                    print(answer)
+                    text = answer['msg']
+                    timestamp = answer['time']
+                    from_ = answer['user']['account_name']
+                    to_ = answer['to']
+                    self.storage.create_message(text, timestamp, from_, to_)
                 elif 'action' in answer and answer['action'] == 'exit' and 'user' in answer and answer['user'] == self.account_name:
                     break
                 elif 'action' in answer and answer['action'] == ACT_GET_CONTACTS and 'response' in answer\
@@ -89,16 +105,17 @@ class ClientReader(threading.Thread):
                         print(f'You can\'t delete {user} from friends!')
                 else:
                     print(answer)
-                    break
+                    logger.error(answer)
             except ValueError as e:
-                print(e)
+                logger.exception(e)
                 break
 
 
 class ClientSender(threading.Thread):
-    def __init__(self, account_name, sock):
+    def __init__(self, account_name, sock, storage):
         self.account_name = account_name
         self.sock = sock
+        self.storage = storage
         super().__init__()
 
     def create_exit_message(self):
@@ -152,33 +169,36 @@ class ClientSender(threading.Thread):
         logger.debug(f'Created message: {message}, sending...')
         send_message(self.sock, message)
         while True:
-            user_input = input(f"-> ")
-            if user_input == 'm':
-                new_message = input('Enter text message: ')
-                to = input('Enter receiver\'s name: ')
+            try:
+                user_input = input(f"-> ")
+                if user_input == 'm':
+                    new_message = input('Enter text message: ')
+                    to = input('Enter receiver\'s name: ')
 
-                message = self.create_message(new_message, to, self.account_name)
-                print(f'SENT | To {to} | {new_message}')
-                logger.debug(f'Created message: {message}, sending...')
-                send_message(self.sock, message)
-            elif user_input == 'a':
-                input_contact = input('Enter username to add to contact list: ')
-                message = self.create_contact_edit_message(ACT_ADD_CONTACT, input_contact)
-                logger.debug(f'Created message: {message}, sending...')
-                send_message(self.sock, message)
-            elif user_input == 'd':
-                input_contact = input('Enter username to delete from contact list: ')
-                message = self.create_contact_edit_message(ACT_DEL_CONTACT, input_contact)
-                logger.debug(f'Created message: {message}, sending...')
-                send_message(self.sock, message)
-            elif user_input == 'c':
-                message = self.create_get_contacts_message()
-                send_message(self.sock, message)
-            else:
-                print('Exiting...')
-                message = self.create_exit_message()
-                send_message(self.sock, message)
-                time.sleep(1)
+                    message = self.create_message(new_message, to, self.account_name)
+                    print(f'SENT | To {to} | {new_message}')
+                    logger.debug(f'Created message: {message}, sending...')
+                    send_message(self.sock, message)
+                elif user_input == 'a':
+                    input_contact = input('Enter username to add to contact list: ')
+                    message = self.create_contact_edit_message(ACT_ADD_CONTACT, input_contact)
+                    logger.debug(f'Created message: {message}, sending...')
+                    send_message(self.sock, message)
+                elif user_input == 'd':
+                    input_contact = input('Enter username to delete from contact list: ')
+                    message = self.create_contact_edit_message(ACT_DEL_CONTACT, input_contact)
+                    logger.debug(f'Created message: {message}, sending...')
+                    send_message(self.sock, message)
+                elif user_input == 'c':
+                    message = self.create_get_contacts_message()
+                    send_message(self.sock, message)
+                else:
+                    print('Exiting...')
+                    message = self.create_exit_message()
+                    send_message(self.sock, message)
+                    time.sleep(1)
+            except Exception as e:
+                logger.exception(e)
 
 
 def main():
@@ -212,7 +232,7 @@ def main():
             reading.daemon = True
             reading.start()
 
-            writing = ClientSender(args.name, s)
+            writing = ClientSender(args.name, s, storage)
             writing.daemon = True
             writing.start()
 
@@ -220,6 +240,7 @@ def main():
                 time.sleep(1)
                 if reading.is_alive() and writing.is_alive():
                     continue
+                time.sleep(60)
                 break
 
 

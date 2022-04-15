@@ -1,6 +1,7 @@
 from sqlalchemy import create_engine, Column, Integer, String, DateTime, ForeignKey, Text
 from sqlalchemy.orm import declarative_base, sessionmaker
 from datetime import datetime
+import os
 
 Base = declarative_base()
 
@@ -39,7 +40,8 @@ class ClientStorage:
             return self.text
 
     def __init__(self, username: str):
-        self.engine = create_engine(f'sqlite:///{username}_storage.db', echo=False, pool_recycle=7200)
+        current_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), f'{username}_storage.db')
+        self.engine = create_engine(f'sqlite:///{current_dir}', echo=False, pool_recycle=7200)
         Base.metadata.create_all(self.engine)
 
         Session = sessionmaker()
@@ -64,12 +66,10 @@ class ClientStorage:
 
     def create_message(self, text: str, timestamp, from_=None, to=None):
         if from_:
-            from_ = self.session.query(self.Contact).filter_by(username=from_).first()
-            if not from_:
+            if not self.is_contact_exists(from_):
                 self.add_contact(from_)
         if to:
-            to = self.session.query(self.Contact).filter_by(username=to).first()
-            if not to:
+            if not self.is_contact_exists(to):
                 self.add_contact(to)
         message = self.Message(text, timestamp, from_, to)
         self.session.add(message)
