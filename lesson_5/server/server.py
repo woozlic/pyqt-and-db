@@ -110,8 +110,15 @@ class Server(Thread, metaclass=ServerVerifier):
                 print('NEW', new_message)
                 responses[sock] = self.process_client_message(new_message, sock)
             except Exception as e:
-                logger.exception('DISCONNECT')
+                logger.warning('DISCONNECT')
                 logger.info(f'Client {client_n} {client_peername} was disconnected.')
+                username = None
+                for name in self.names:
+                    print(name, self.names[name])
+                    if self.names[name] == sock:
+                        username = name
+                if username:
+                    self.storage.user_logout(username)
                 self.clients.remove(sock)
                 sock.close()
         return responses

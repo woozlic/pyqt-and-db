@@ -201,25 +201,29 @@ class ClientSender(threading.Thread):
                 logger.exception(e)
 
 
-def main():
+def get_args():
+    """Returns Server\'s address, port and client\'s name from cmd args"""
     parser = argparse.ArgumentParser(description='A client')
     parser.add_argument("address", help='Server\'s address. Default: 127.0.0.1', nargs='?', default=HOST)
     parser.add_argument("port", help='Server\'s port. Default: 7777', nargs='?', default=PORT)
     parser.add_argument('-n', dest='name', default='guest', required=False)
     args = parser.parse_args()
     logger.debug(f'Args: {args.address}, {args.port} {args.name}')
+    return args.address, args.port, args.name
+
+
+def main():
+    host, port, name = get_args()
     with socket(AF_INET, SOCK_STREAM) as s:
-        host = args.address
-        port = int(args.port)
         try:
             s.connect((host, port))
             logger.debug(f'Connected to {host}:{port}')
 
-            send_message(s, create_presence(args.name))
+            send_message(s, create_presence(name))
             answer = get_message(s)
             handle_answer(answer)
 
-            print(f'Hello, client {args.name}!')
+            print(f'Hello, client {name}!')
             print('Your address is', s.getsockname())
         except ConnectionRefusedError:
             logger.error('Can\'t connect to a server')
@@ -227,12 +231,12 @@ def main():
             logger.exception('Error occured by attempting to log in')
             logger.error(e)
         else:
-            storage = ClientStorage(args.name)
-            reading = ClientReader(args.name, s, storage)
+            storage = ClientStorage(name)
+            reading = ClientReader(name, s, storage)
             reading.daemon = True
             reading.start()
 
-            writing = ClientSender(args.name, s, storage)
+            writing = ClientSender(name, s, storage)
             writing.daemon = True
             writing.start()
 
@@ -240,7 +244,6 @@ def main():
                 time.sleep(1)
                 if reading.is_alive() and writing.is_alive():
                     continue
-                time.sleep(60)
                 break
 
 

@@ -1,5 +1,5 @@
-from client_chat import Ui_MainWindow
-from client_add_contact import Ui_form_add_contact
+from .client_chat import Ui_MainWindow
+from .client_add_contact import Ui_form_add_contact
 import sys
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QTableWidgetItem
@@ -8,13 +8,16 @@ from PyQt5.QtCore import pyqtSlot
 
 
 class ChatGui(QMainWindow, Ui_MainWindow):
-    def __init__(self, parent=None):
+    def __init__(self, storage, transport, parent=None):
         super().__init__(parent)
         self.setupUi(self)
         self.initUi()
 
     def initUi(self):
         self.show()
+
+    def make_connection(self):
+        pass
 
 
 class AddContactGui(QMainWindow, Ui_form_add_contact):
@@ -29,6 +32,6 @@ class AddContactGui(QMainWindow, Ui_form_add_contact):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    win = ChatGui()
+    win = ChatGui(None, None)
     # add_contact = AddContactGui()
     sys.exit(app.exec())
