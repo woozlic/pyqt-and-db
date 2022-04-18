@@ -85,6 +85,12 @@ class Server(Thread, metaclass=ServerVerifier):
                 message["response"] = 400
             send_message(client, message)
             return message
+        elif 'action' in message and message['action'] == ACT_GET_CLIENTS and 'user' in message:
+            clients = self.storage.get_clients()
+            message['clients'] = clients
+            message['response'] = 200
+            send_message(client, message)
+            return message
         elif 'action' in message and message['action'] == ACT_ADD_CONTACT or message['action'] == ACT_DEL_CONTACT:
             user_from = message['user_login']
             user_to = message['user_id']

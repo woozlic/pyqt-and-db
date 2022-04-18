@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'client/ui/client_chat.ui'
+# Form implementation generated from reading ui file 'client_chat.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.4
 #
@@ -40,12 +40,12 @@ class Ui_MainWindow(object):
         self.horizontalLayout_5.setObjectName("horizontalLayout_5")
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.btn_del_contact = QtWidgets.QPushButton(self.centralwidget)
-        self.btn_del_contact.setObjectName("btn_del_contact")
-        self.horizontalLayout.addWidget(self.btn_del_contact)
         self.btn_add_contact = QtWidgets.QPushButton(self.centralwidget)
         self.btn_add_contact.setObjectName("btn_add_contact")
         self.horizontalLayout.addWidget(self.btn_add_contact)
+        self.btn_del_contact = QtWidgets.QPushButton(self.centralwidget)
+        self.btn_del_contact.setObjectName("btn_del_contact")
+        self.horizontalLayout.addWidget(self.btn_del_contact)
         self.horizontalLayout_5.addLayout(self.horizontalLayout)
         self.gridLayout_2.addLayout(self.horizontalLayout_5, 5, 0, 1, 1)
         self.label_help = QtWidgets.QLabel(self.centralwidget)
@@ -72,6 +72,6 @@ class Ui_MainWindow(object):
         self.label_contacts.setText(_translate("MainWindow", "Contacts"))
         self.btn_send_message.setText(_translate("MainWindow", "Send"))
         self.label_messages.setText(_translate("MainWindow", "Messages"))
-        self.btn_del_contact.setText(_translate("MainWindow", "Add contact"))
-        self.btn_add_contact.setText(_translate("MainWindow", "Delete contact"))
+        self.btn_add_contact.setText(_translate("MainWindow", "Add contact"))
+        self.btn_del_contact.setText(_translate("MainWindow", "Delete contact"))
         self.label_help.setText(_translate("MainWindow", "Type text below and click \"Send\""))

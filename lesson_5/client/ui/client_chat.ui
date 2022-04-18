@@ -53,14 +53,14 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
-         <widget class="QPushButton" name="btn_del_contact">
+         <widget class="QPushButton" name="btn_add_contact">
           <property name="text">
            <string>Add contact</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="btn_add_contact">
+         <widget class="QPushButton" name="btn_del_contact">
           <property name="text">
            <string>Delete contact</string>
           </property>

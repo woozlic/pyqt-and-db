@@ -26,7 +26,7 @@ class ClientStorage:
         id = Column(Integer, primary_key=True)
         from_ = Column(Integer, ForeignKey('contacts.id'), nullable=True)
         to = Column(Integer, ForeignKey('contacts.id'), nullable=True)
-        timestamp = DateTime()
+        timestamp = Column(DateTime)
         text = Column(Text)
 
         def __init__(self, text: str, timestamp, from_=None, to=None):
@@ -46,6 +46,15 @@ class ClientStorage:
 
         Session = sessionmaker()
         self.session = Session(bind=self.engine)
+
+    def get_history(self, current_chat):
+        messages_from = self.session.query(self.Message).filter_by(from_=current_chat)
+        messages_to = self.session.query(self.Message).filter_by(to=current_chat)
+        messages_from = [(m.from_, m.to, m.timestamp, m.text) for m in messages_from]
+        messages_to = [(m.from_, m.to, m.timestamp, m.text) for m in messages_to]
+        print([i[2] for i in messages_to])
+        history = sorted([*messages_from, *messages_to], key=lambda x: x[2])  # datetime.strptime(x[2],
+        return history
 
     def get_contacts(self):
         contacts = self.session.query(self.Contact).all()

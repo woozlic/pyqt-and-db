@@ -64,6 +64,9 @@ class ServerStorage:
         self.session.query(self.ActiveClient).delete()
         self.session.commit()
 
+    def get_clients(self):
+        return [c.username for c in self.session.query(self.Client).all()]
+
     def is_user_exist(self, username):
         return self.session.query(self.Client).filter_by(username=username).first()
 

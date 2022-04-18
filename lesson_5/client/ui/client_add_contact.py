@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'client/ui/client_add_contact.ui'
+# Form implementation generated from reading ui file 'client_add_contact.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.4
 #

@@ -7,7 +7,7 @@ import sys, os
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from common.variables import PORT, ACT_PRESENCE, HOST, ACT_MESSAGE, ACT_ADD_CONTACT, ACT_DEL_CONTACT, ACT_GET_CONTACTS, \
-    ACT_EXIT
+    ACT_EXIT, ACT_GET_CLIENTS
 from common.utils import get_unix_time_str, send_message, get_message, get_datetime_from_unix_str
 from client_database import ClientStorage
 import log.client_log_config
@@ -91,6 +91,30 @@ class ClientTransport(Thread, QObject):
 
         logger.info('Connected to a server!')
 
+    def get_clients(self):
+        with socket_lock:
+            send_message(self.transport, self.create_get_clients_message())
+            return self.handle_answer(get_message(self.transport))
+
+    def add_contact(self, user):
+        if not self.database.is_contact_exists(user):
+            self.database.add_contact(user)
+            with socket_lock:
+                send_message(self.transport, self.create_contact_edit_message(ACT_ADD_CONTACT, user))
+                self.handle_answer(get_message(self.transport))
+            print(f'You \'ve added {user} to friends!')
+        else:
+            print(f'You can\'t add {user} to friends!')
+
+    def del_contact(self, user):
+        if self.database.is_contact_exists(user):
+            self.database.delete_contact(user)
+            with socket_lock:
+                send_message(self.transport, self.create_contact_edit_message(ACT_DEL_CONTACT, user))
+                self.handle_answer(get_message(self.transport))
+        else:
+            print(f'You can\'t delete {user} from friends!')
+
     def handle_answer(self, answer):
         try:
             if 'action' in answer and answer['action'] == ACT_MESSAGE and 'user' in answer and 'to' in answer and \
@@ -114,37 +138,47 @@ class ClientTransport(Thread, QObject):
                 return
             elif 'action' in answer and answer['action'] == ACT_PRESENCE and 'user' in answer:
                 logger.info('Status: Online!')
+            elif 'action' in answer and answer['action'] == ACT_GET_CLIENTS and 'user' in answer and 'response' \
+                    in answer and answer['response'] == 200:
+                print(answer)
+                return answer['clients']
             elif 'action' in answer and answer['action'] == ACT_GET_CONTACTS and 'response' in answer\
                     and answer['response'] == 202:
                 contacts = self.storage.get_contacts()
                 print(f'Your contacts: {", ".join(contacts)}')
             elif 'action' in answer and answer['action'] == ACT_ADD_CONTACT and 'response' in answer \
                     and 'user_id' in answer:
-                user = answer['user_id']
-                if answer['response'] == 200:
-                    if not self.storage.is_contact_exists(user):
-                        self.storage.add_contact(user)
-                        print(f'You \'ve added {user} to friends!')
-                    else:
-                        print(f'You can\'t add {user} to friends!')
-                else:
-                    print(f'You can\'t add {user} to friends!')
+                # user = answer['user_id']
+                # if answer['response'] == 200:
+                #     self.add_contact(user)
+                # else:
+                #     print(f'You can\'t add {user} to friends!')
+                pass
             elif 'action' in answer and answer['action'] == ACT_DEL_CONTACT and 'response' in answer\
                     and 'user_id' in answer:
-                user = answer['user_id']
-                if answer['response'] == 200:
-                    if self.storage.is_contact_exists(user):
-                        self.storage.delete_contact(user)
-                        print(f'You \'ve deleted {user} from friends')
-                    else:
-                        print(f'You can\'t delete {user} from friends!')
-                else:
-                    print(f'You can\'t delete {user} from friends!')
+                # user = answer['user_id']
+                # if answer['response'] == 200:
+                #     self.del_contact(user)
+                # else:
+                #     print(f'You can\'t delete {user} from friends!')
+                pass
             else:
                 print(answer)
                 logger.error(answer)
         except ValueError as e:
             logger.exception(e)
+
+    def create_get_clients_message(self):
+        message = {
+            "action": ACT_GET_CLIENTS,
+            "time": get_unix_time_str(),
+            "type": "status",
+            "user": {
+                "account_name": self.account_name,
+                "status": "online"
+            }
+        }
+        return message
 
     def create_presence(self, account_name='guest'):
         presence = {
