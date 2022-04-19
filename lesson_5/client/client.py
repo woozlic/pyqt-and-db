@@ -62,8 +62,7 @@ class ClientReader(threading.Thread):
                         answer['to'] == self.account_name:
                     print(f'NEW | From {answer["user"]["account_name"]} | {answer["msg"]}')
                     text = answer['msg']
-                    timestamp = get_datetime_from_unix_str(answer['time'])
-                    logger.info(timestamp)
+                    timestamp = datetime.datetime.strptime(answer['time'].strip(), '%a %b %d %H:%M:%S %Y')
                     from_ = answer['user']['account_name']
                     to_ = answer['to']
                     self.storage.create_message(text, timestamp, from_, to_)
@@ -71,7 +70,7 @@ class ClientReader(threading.Thread):
                         answer['user']['account_name'] == self.account_name:
                     print(answer)
                     text = answer['msg']
-                    timestamp = answer['time']
+                    timestamp = datetime.datetime.strptime(answer['time'].strip(), '%a %b %d %H:%M:%S %Y')
                     from_ = answer['user']['account_name']
                     to_ = answer['to']
                     self.storage.create_message(text, timestamp, from_, to_)

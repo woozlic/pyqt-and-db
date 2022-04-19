@@ -46,12 +46,18 @@ class Server(Thread, metaclass=ServerVerifier):
         }
         if "action" in message and message['action'] == ACT_PRESENCE\
                 and 'time' in message and 'user' in message:
-            message["response"] = RESP_OK
             username = message['user']['account_name']
+            client_host, client_port = client.getsockname()
+            try:
+                self.storage.user_login(username, client_host, client_port)
+            except ValueError as e:
+                response_message = dict(answer_bad_request)
+                response_message['error'] = str(e)
+                send_message(client, response_message)
+                return response_message
+            message["response"] = RESP_OK
             self.names[username] = client
             send_message(client, message)
-            client_host, client_port = client.getsockname()
-            self.storage.user_login(username, client_host, client_port)
             global new_client
             with lock:
                 new_client = True
@@ -85,8 +91,10 @@ class Server(Thread, metaclass=ServerVerifier):
                 message["response"] = 400
             send_message(client, message)
             return message
-        elif 'action' in message and message['action'] == ACT_GET_CLIENTS and 'user' in message:
-            clients = self.storage.get_clients()
+        elif 'action' in message and message['action'] == ACT_GET_CLIENTS and 'user' in message and 'account_name' \
+                in message['user']:
+            user = message['user']['account_name']
+            clients = self.storage.get_clients(user)
             message['clients'] = clients
             message['response'] = 200
             send_message(client, message)
@@ -105,28 +113,32 @@ class Server(Thread, metaclass=ServerVerifier):
             logger.warning(f'Bad Request from {client.getpeername()}')
             return answer_bad_request
 
+    def kill_user(self, sock):
+        username = None
+        client_n = sock.fileno()
+        client_peername = sock.getpeername()
+        logger.info(f'Client {client_n} {client_peername} was disconnected.')
+        for name in self.names:
+            print(name, self.names[name])
+            if self.names[name] == sock:
+                username = name
+        if username:
+            self.storage.user_logout(username)
+        self.clients.remove(sock)
+        sock.close()
+
     def read_requests(self, r_clients):
         """Read requests from list of clients"""
         responses = {}
         for sock in r_clients:
-            client_n = sock.fileno()
-            client_peername = sock.getpeername()
             try:
                 new_message = get_message(sock)
                 print('NEW', new_message)
                 responses[sock] = self.process_client_message(new_message, sock)
             except Exception as e:
-                logger.warning('DISCONNECT')
-                logger.info(f'Client {client_n} {client_peername} was disconnected.')
-                username = None
-                for name in self.names:
-                    print(name, self.names[name])
-                    if self.names[name] == sock:
-                        username = name
-                if username:
-                    self.storage.user_logout(username)
-                self.clients.remove(sock)
-                sock.close()
+                logger.warning(e)
+                self.kill_user(sock)
+
         return responses
 
     def write_responses(self, requests, w_clients):
@@ -134,20 +146,19 @@ class Server(Thread, metaclass=ServerVerifier):
             if sock in requests:
                 try:
                     client_message = requests[sock]
+                    print('Client message', client_message)
                     if 'msg' in client_message and 'to' in client_message:
                         to_client = self.names[client_message['to']]
                         if client_message['to'] in self.names.keys():
                             send_message(to_client, client_message)
-                            logger.debug(f'Sending a message {client_message} to {to_client.getpeername()}')
+                            print(f'Sending a message {client_message} to {to_client.getpeername()}')
                         else:
-                            logger.debug('This user is not online!')
+                            print('This user is not online!')
                 except TypeError as e:
                     logger.exception(f'Is message a dict?')
                 except Exception as e:
                     logger.debug(e)
-                    logger.info(f'Client {sock.fileno()} {sock.getpeername()} was disconnected.')
-                    sock.close()
-                    self.clients.remove(sock)
+                    self.kill_user(sock)
 
     def run(self):
         with socket(AF_INET, SOCK_STREAM) as s:

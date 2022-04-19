@@ -40,8 +40,10 @@ class ClientStorage:
             return self.text
 
     def __init__(self, username: str):
+        self.username = username
         current_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), f'{username}_storage.db')
-        self.engine = create_engine(f'sqlite:///{current_dir}', echo=False, pool_recycle=7200)
+        self.engine = create_engine(f'sqlite:///{current_dir}', echo=False, pool_recycle=7200,
+                                    connect_args={'check_same_thread': False})
         Base.metadata.create_all(self.engine)
 
         Session = sessionmaker()
@@ -75,10 +77,10 @@ class ClientStorage:
 
     def create_message(self, text: str, timestamp, from_=None, to=None):
         if from_:
-            if not self.is_contact_exists(from_):
+            if not self.is_contact_exists(from_) and from_ != to and self.username != from_:
                 self.add_contact(from_)
         if to:
-            if not self.is_contact_exists(to):
+            if not self.is_contact_exists(to) and from_ != to and self.username != to:
                 self.add_contact(to)
         message = self.Message(text, timestamp, from_, to)
         self.session.add(message)
@@ -89,9 +91,11 @@ class ClientStorage:
 
     def delete_all_contacts(self):
         self.session.query(self.Contact).delete()
+        self.session.commit()
 
     def delete_all_messages(self):
         self.session.query(self.Message).delete()
+        self.session.commit()
 
 
 if __name__ == '__main__':

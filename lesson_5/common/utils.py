@@ -3,6 +3,7 @@ from .variables import BYTES_RECV_SIZE
 import json
 import logging
 from datetime import datetime
+import locale
 
 
 logger = logging.getLogger('server')
@@ -34,4 +35,5 @@ def get_unix_time_str():
 
 
 def get_datetime_from_unix_str(unix_str: str):
+    locale.setlocale(locale.LC_TIME, 'en_US.utf8')
     return datetime.strptime(unix_str.strip(), "%a %b %d %H:%M:%S %Y")

@@ -20,7 +20,7 @@ socket_lock = Lock()
 
 class ClientTransport(Thread, QObject):
     new_message = pyqtSignal(str)
-    connection_lost = pyqtSignal
+    connection_lost = pyqtSignal()
 
     def __init__(self, host, port, database, username):
         Thread.__init__(self)
@@ -43,6 +43,36 @@ class ClientTransport(Thread, QObject):
             raise ValueError('Lost connection to a server.')
 
         self.running = True
+
+    def run(self) -> None:
+        logger.info('Getting new messages...')
+        while self.running:
+            # Отдыхаем секунду и снова пробуем захватить сокет. Если не сделать тут задержку,
+            # то отправка может достаточно долго ждать освобождения сокета.
+            time.sleep(1)
+            with socket_lock:
+                try:
+                    self.transport.settimeout(0.5)
+                    message = get_message(self.transport)
+                except OSError as err:
+                    if err.errno:
+                        # выход по таймауту вернёт номер ошибки err.errno равный None
+                        # поэтому, при выходе по таймауту мы сюда попросту не попадём
+                        logger.critical(f'Lost connection to a server.')
+                        self.running = False
+                        self.connection_lost.emit()
+                # Проблемы с соединением
+                except (ConnectionError, ConnectionAbortedError,
+                        ConnectionResetError, json.JSONDecodeError, TypeError):
+                    logger.debug(f'Lost connection to a server.')
+                    self.running = False
+                    self.connection_lost.emit()
+                # Если сообщение получено, то вызываем функцию обработчик:
+                else:
+                    logger.debug(f'Got new message from a server: {message}')
+                    self.handle_answer(message)
+                finally:
+                    self.transport.settimeout(5)
 
     def user_list_update(self):
         pass
@@ -115,6 +145,11 @@ class ClientTransport(Thread, QObject):
         else:
             print(f'You can\'t delete {user} from friends!')
 
+    def send_message_to_user(self, username, text):
+        with socket_lock:
+            send_message(self.transport, self.create_message(text, username, self.account_name))
+            self.handle_answer(get_message(self.transport))
+
     def handle_answer(self, answer):
         try:
             if 'action' in answer and answer['action'] == ACT_MESSAGE and 'user' in answer and 'to' in answer and \
@@ -122,25 +157,23 @@ class ClientTransport(Thread, QObject):
                 print(f'NEW | From {answer["user"]["account_name"]} | {answer["msg"]}')
                 text = answer['msg']
                 timestamp = get_datetime_from_unix_str(answer['time'])
-                logger.info(timestamp)
                 from_ = answer['user']['account_name']
                 to_ = answer['to']
-                self.storage.create_message(text, timestamp, from_, to_)
+                self.database.create_message(text, timestamp, from_, to_)
+                self.new_message.emit(from_)
             elif 'action' in answer and answer['action'] == ACT_MESSAGE and 'user' in answer and 'to' in answer and \
                     answer['user']['account_name'] == self.account_name:
-                print(answer)
                 text = answer['msg']
-                timestamp = answer['time']
+                timestamp = get_datetime_from_unix_str(answer['time'])
                 from_ = answer['user']['account_name']
                 to_ = answer['to']
-                self.storage.create_message(text, timestamp, from_, to_)
+                self.database.create_message(text, timestamp, from_, to_)
             elif 'action' in answer and answer['action'] == ACT_EXIT and 'user' in answer and answer['user'] == self.account_name:
                 return
             elif 'action' in answer and answer['action'] == ACT_PRESENCE and 'user' in answer:
                 logger.info('Status: Online!')
             elif 'action' in answer and answer['action'] == ACT_GET_CLIENTS and 'user' in answer and 'response' \
                     in answer and answer['response'] == 200:
-                print(answer)
                 return answer['clients']
             elif 'action' in answer and answer['action'] == ACT_GET_CONTACTS and 'response' in answer\
                     and answer['response'] == 202:
@@ -148,23 +181,16 @@ class ClientTransport(Thread, QObject):
                 print(f'Your contacts: {", ".join(contacts)}')
             elif 'action' in answer and answer['action'] == ACT_ADD_CONTACT and 'response' in answer \
                     and 'user_id' in answer:
-                # user = answer['user_id']
-                # if answer['response'] == 200:
-                #     self.add_contact(user)
-                # else:
-                #     print(f'You can\'t add {user} to friends!')
                 pass
             elif 'action' in answer and answer['action'] == ACT_DEL_CONTACT and 'response' in answer\
                     and 'user_id' in answer:
-                # user = answer['user_id']
-                # if answer['response'] == 200:
-                #     self.del_contact(user)
-                # else:
-                #     print(f'You can\'t delete {user} from friends!')
                 pass
+            elif "error" in answer:
+                logger.error(answer['error'])
+                exit(1)
             else:
-                print(answer)
                 logger.error(answer)
+                exit(1)
         except ValueError as e:
             logger.exception(e)
 
@@ -180,13 +206,13 @@ class ClientTransport(Thread, QObject):
         }
         return message
 
-    def create_presence(self, account_name='guest'):
+    def create_presence(self):
         presence = {
             "action": ACT_PRESENCE,
             "time": get_unix_time_str(),
             "type": "status",
             "user": {
-                "account_name": account_name,
+                "account_name": self.account_name,
                 "status": "online"
             }
         }
@@ -231,6 +257,7 @@ class ClientTransport(Thread, QObject):
             "to": to,
             "msg": message,
         }
+        logger.info(f'Created message {account_name} -> {to} | {message}')
         return message_dict
 
     def print_help(self):

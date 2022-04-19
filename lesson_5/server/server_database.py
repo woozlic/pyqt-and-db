@@ -1,5 +1,3 @@
-import os.path
-
 from sqlalchemy import create_engine, Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.orm import declarative_base, sessionmaker
 from datetime import datetime
@@ -56,7 +54,8 @@ class ServerStorage:
             return self.ip_address + ":" + self.port
 
     def __init__(self, path):
-        self.engine = create_engine(f'sqlite:///{path}', echo=False, pool_recycle=7200)
+        self.engine = create_engine(f'sqlite:///{path}', echo=False, pool_recycle=7200,
+                                    connect_args={'check_same_thread': False})
         Base.metadata.create_all(self.engine)
 
         Session = sessionmaker()
@@ -64,14 +63,18 @@ class ServerStorage:
         self.session.query(self.ActiveClient).delete()
         self.session.commit()
 
-    def get_clients(self):
-        return [c.username for c in self.session.query(self.Client).all()]
+    def get_clients(self, user):
+        print(user)
+        return [c.username for c in self.session.query(self.Client).filter(self.Client.username != user).all()]
 
     def is_user_exist(self, username):
         return self.session.query(self.Client).filter_by(username=username).first()
 
+    def check_user_online(self, user):
+        if self.session.query(self.ActiveClient).filter_by(client=user.id).first():
+            raise ValueError('User already logged in.')
+
     def user_login(self, username, address, port):
-        print(f'User {username} from {address}:{port} logged in')
         res = self.session.query(self.Client).filter_by(username=username)
         if res.count():
             user = res.first()
@@ -85,9 +88,12 @@ class ServerStorage:
         self.session.add(new_login_row)
         self.session.commit()
 
+        self.check_user_online(user)
+
         new_active_row = self.ActiveClient(client=user.id, ip_address=address, port=port, login_time=datetime.now())
         self.session.add(new_active_row)
         self.session.commit()
+        print(f'User {username} from {address}:{port} logged in')
 
     def user_logout(self, username):
         print(f'User {username} logged out')

@@ -2,7 +2,7 @@ from .client_chat import Ui_MainWindow
 from .client_add_contact import Ui_form_add_contact
 import sys
 from PyQt5.QtWidgets import (
-    QApplication, QMainWindow, QTableWidgetItem
+    QApplication, QMainWindow, QTableWidgetItem, QMessageBox
 )
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from PyQt5.QtCore import pyqtSlot, Qt
@@ -18,6 +18,7 @@ class ChatGui(QMainWindow, Ui_MainWindow):
         self.current_chat = None
         self.add_contact_gui = None
         self.history_model = None
+        self.alert = QMessageBox()
         self.setupUi(self)
         self.clients_list_update()
         self.initUi()
@@ -28,9 +29,10 @@ class ChatGui(QMainWindow, Ui_MainWindow):
 
     def initUi(self):
         self.grant_send_message(False)
-        self.list_contacts.doubleClicked.connect(self.select_contact)
+        self.list_contacts.clicked.connect(self.select_contact)
         self.btn_add_contact.clicked.connect(self.open_add_contact_gui)
         self.btn_del_contact.clicked.connect(self.del_contact)
+        self.btn_send_message.clicked.connect(self.send_message)
         self.show()
 
     def open_add_contact_gui(self):
@@ -54,6 +56,16 @@ class ChatGui(QMainWindow, Ui_MainWindow):
         self.grant_send_message(True)
         self.messages_list_update()
 
+    def send_message(self):
+        message_text = self.edit_message.text()
+        if not message_text:
+            return
+        alert = self.transport.send_message_to_user(self.current_chat, message_text)
+        if alert:
+            self.alert.warning(self, 'Oops', 'It seems that user is not online. Try later.')
+        self.messages_list_update()
+        self.edit_message.setText('')
+
     def messages_list_update(self):
         history = self.storage.get_history(self.current_chat)
 
@@ -70,22 +82,32 @@ class ChatGui(QMainWindow, Ui_MainWindow):
         for i in range(start_index, length):
             item = history[i]
             print(item)
-            # if item[1] == 'in':
-            #     mess = QStandardItem(f'Входящее от {item[3].replace(microsecond=0)}:\n {item[2]}')
-            #     mess.setEditable(False)
-            #     mess.setBackground(QBrush(QColor(255, 213, 213)))
-            #     mess.setTextAlignment(Qt.AlignLeft)
-            #     self.history_model.appendRow(mess)
-            # else:
-            #     mess = QStandardItem(f'Исходящее от {item[3].replace(microsecond=0)}:\n {item[2]}')
-            #     mess.setEditable(False)
-            #     mess.setTextAlignment(Qt.AlignRight)
-            #     mess.setBackground(QBrush(QColor(204, 255, 204)))
-            #     self.history_model.appendRow(mess)
+            if item[1] != self.current_chat:
+                mess = QStandardItem(f'{item[2]}\nВходящее от {item[0]}\n{item[3]}')
+                mess.setEditable(False)
+                mess.setBackground(QBrush(QColor(255, 213, 213)))
+                mess.setTextAlignment(Qt.AlignLeft)
+                self.history_model.appendRow(mess)
+            else:
+                mess = QStandardItem(f'{item[2]}\nИсходящее от {item[0]}\n{item[3]}')
+                mess.setEditable(False)
+                mess.setTextAlignment(Qt.AlignRight)
+                mess.setBackground(QBrush(QColor(204, 255, 204)))
+                self.history_model.appendRow(mess)
         self.list_messages.scrollToBottom()
 
-    def make_connection(self):
-        pass
+    def make_connection(self, obj):
+        obj.new_message.connect(self.message)
+        obj.connection_lost.connect(self.connection_lost)
+
+    @pyqtSlot(str)
+    def message(self, sender):
+        self.alert.information(self, 'Info', f'New message from {sender}!')
+        self.messages_list_update()
+        self.clients_list_update()
+
+    def connection_lost(self):
+        self.alert.critical(self, 'Oops', 'Lost connection to a server.')
 
     def clients_list_update(self):
         contacts_list = self.storage.get_contacts()

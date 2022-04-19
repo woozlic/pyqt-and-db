@@ -53,7 +53,7 @@ def main():
         transport.start()
 
         chat_window = ChatGui(storage, transport)
-        chat_window.make_connection()
+        chat_window.make_connection(transport)
         client_app.exec_()
 
         transport.shutdown()
