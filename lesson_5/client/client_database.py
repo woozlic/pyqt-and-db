@@ -26,7 +26,7 @@ class ClientStorage:
         id = Column(Integer, primary_key=True)
         from_ = Column(Integer, ForeignKey('contacts.id'), nullable=True)
         to = Column(Integer, ForeignKey('contacts.id'), nullable=True)
-        timestamp = DateTime()
+        timestamp = Column(DateTime)
         text = Column(Text)
 
         def __init__(self, text: str, timestamp, from_=None, to=None):
@@ -40,12 +40,23 @@ class ClientStorage:
             return self.text
 
     def __init__(self, username: str):
+        self.username = username
         current_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), f'{username}_storage.db')
-        self.engine = create_engine(f'sqlite:///{current_dir}', echo=False, pool_recycle=7200)
+        self.engine = create_engine(f'sqlite:///{current_dir}', echo=False, pool_recycle=7200,
+                                    connect_args={'check_same_thread': False})
         Base.metadata.create_all(self.engine)
 
         Session = sessionmaker()
         self.session = Session(bind=self.engine)
+
+    def get_history(self, current_chat):
+        messages_from = self.session.query(self.Message).filter_by(from_=current_chat)
+        messages_to = self.session.query(self.Message).filter_by(to=current_chat)
+        messages_from = [(m.from_, m.to, m.timestamp, m.text) for m in messages_from]
+        messages_to = [(m.from_, m.to, m.timestamp, m.text) for m in messages_to]
+        print([i[2] for i in messages_to])
+        history = sorted([*messages_from, *messages_to], key=lambda x: x[2])  # datetime.strptime(x[2],
+        return history
 
     def get_contacts(self):
         contacts = self.session.query(self.Contact).all()
@@ -66,10 +77,10 @@ class ClientStorage:
 
     def create_message(self, text: str, timestamp, from_=None, to=None):
         if from_:
-            if not self.is_contact_exists(from_):
+            if not self.is_contact_exists(from_) and from_ != to and self.username != from_:
                 self.add_contact(from_)
         if to:
-            if not self.is_contact_exists(to):
+            if not self.is_contact_exists(to) and from_ != to and self.username != to:
                 self.add_contact(to)
         message = self.Message(text, timestamp, from_, to)
         self.session.add(message)
@@ -80,9 +91,11 @@ class ClientStorage:
 
     def delete_all_contacts(self):
         self.session.query(self.Contact).delete()
+        self.session.commit()
 
     def delete_all_messages(self):
         self.session.query(self.Message).delete()
+        self.session.commit()
 
 
 if __name__ == '__main__':

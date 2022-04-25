@@ -14,6 +14,8 @@ ACT_QUIT = 'quit'
 ACT_AUTHENTICATE = 'authenticate'
 ACT_JOIN = 'join'
 ACT_LEAVE = 'leave'
+ACT_EXIT = 'exit'
+ACT_GET_CLIENTS = 'get_clients'
 
 RESP_BASE_NOTIF = 100
 RESP_IMORTANT_NOTIF = 101
