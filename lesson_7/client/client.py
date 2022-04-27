@@ -17,7 +17,9 @@ logger = logging.getLogger('client')
 
 
 def get_args():
-    """Returns Server\'s address, port and client\'s name from cmd args"""
+    """Returns Server\'s address, port and client\'s name from cmd args
+    Example: python client.py 127.0.0.1 8000 -n NAME
+    """
     parser = argparse.ArgumentParser(description='A client')
     parser.add_argument("address", help='Server\'s address. Default: 127.0.0.1', nargs='?', default=HOST)
     parser.add_argument("port", help='Server\'s port. Default: 7777', nargs='?', default=PORT)
@@ -29,6 +31,8 @@ def get_args():
 
 
 def prompt_login_password():
+    """QT Window for prompting username and password from a user
+    """
     login_qapp = QApplication(sys.argv)
     login = LoginGui()
     login_qapp.exec_()
@@ -37,6 +41,7 @@ def prompt_login_password():
 
 
 def main():
+    """Main loop for client that obtains cmd args, prompts username and password, sets db connection and GUI"""
     host, port, name, password = get_args()
     if not (name and password):
         name, password = prompt_login_password()

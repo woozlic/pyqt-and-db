@@ -40,6 +40,7 @@ class Server(Thread, metaclass=ServerVerifier):
 
     @log
     def process_client_message(self, message: dict, client) -> dict:
+        """Replies to a clients request"""
         answer_bad_request = {
             "response": RESP_WRONG_REQUEST,
             "error": "Bad Request"
@@ -115,6 +116,7 @@ class Server(Thread, metaclass=ServerVerifier):
             return answer_bad_request
 
     def kill_user(self, sock):
+        """Closes connection for given user"""
         username = None
         client_n = sock.fileno()
         client_peername = sock.getpeername()
@@ -143,6 +145,7 @@ class Server(Thread, metaclass=ServerVerifier):
         return responses
 
     def write_responses(self, requests, w_clients):
+        """Responds to client's requests"""
         for sock in w_clients:
             if sock in requests:
                 try:
@@ -208,6 +211,7 @@ def main():
     server_gui = ServerGui(ServerStorage(current_dir))
 
     def list_update():
+        """Update table with users if new user is connected to a server"""
         global new_client
         if new_client:
             server_gui.update_from_db()

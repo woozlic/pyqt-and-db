@@ -1,4 +1,5 @@
 class Port:
+    """Descriptor for port object"""
 
     def __init__(self):
         self._value = 7777

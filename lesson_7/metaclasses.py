@@ -2,6 +2,7 @@ import dis
 
 
 class ClientVerifier(type):
+    """Metaclass for verifying if client is correct"""
     def __init__(cls, clsname, bases, clsdict):
 
         presence_get_message = False
@@ -25,6 +26,7 @@ class ClientVerifier(type):
 
 
 class ServerVerifier(type):
+    """Metaclass for verifying if server is correct"""
     def __init__(cls, clsname, bases, clsdict):
 
         methods_1 = []

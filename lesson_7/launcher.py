@@ -11,6 +11,7 @@ BASE_PATH = os.path.dirname(__file__)
 
 
 def get_subprocess(file, args_list=()):
+    """Runs subprocess and returns it"""
     time.sleep(0.2)
     if platform_name.startswith('win'):
         cmd = [PYTHON_PATH, BASE_PATH + '\\' + file, *args_list]

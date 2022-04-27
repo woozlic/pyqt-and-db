@@ -19,6 +19,7 @@ socket_lock = Lock()
 
 
 class ClientTransport(Thread, QObject):
+    """Class for interaction with DB"""
     new_message = pyqtSignal(str)
     connection_lost = pyqtSignal()
 
@@ -35,6 +36,7 @@ class ClientTransport(Thread, QObject):
         self.running = True
 
     def run(self) -> None:
+        """Main loop for this class. Getting messages and handle them"""
         logger.info('Getting new messages...')
         while self.running:
             # Отдыхаем секунду и снова пробуем захватить сокет. Если не сделать тут задержку,
@@ -67,6 +69,7 @@ class ClientTransport(Thread, QObject):
                     self.transport.settimeout(5)
 
     def shutdown(self):
+        """Gracefully closes connections"""
         self.running = False
         with socket_lock:
             try:
@@ -77,6 +80,7 @@ class ClientTransport(Thread, QObject):
         time.sleep(0.5)
 
     def connection_init(self, port, ip):
+        """Trying to connect to a server"""
         self.transport = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.transport.settimeout(5)
         connected = False
@@ -108,11 +112,13 @@ class ClientTransport(Thread, QObject):
         logger.info('Connected to a server!')
 
     def get_clients(self):
+        """Returns clients list from a server"""
         with socket_lock:
             send_message(self.transport, self.create_get_clients_message())
             return self.handle_answer(get_message(self.transport))
 
     def add_contact(self, user):
+        """Adds user to a contacts list"""
         if not self.database.is_contact_exists(user):
             self.database.add_contact(user)
             with socket_lock:
@@ -123,6 +129,7 @@ class ClientTransport(Thread, QObject):
             print(f'You can\'t add {user} to friends!')
 
     def del_contact(self, user):
+        """Deletes user from a contacts list"""
         if self.database.is_contact_exists(user):
             self.database.delete_contact(user)
             with socket_lock:
@@ -132,11 +139,13 @@ class ClientTransport(Thread, QObject):
             print(f'You can\'t delete {user} from friends!')
 
     def send_message_to_user(self, username, text):
+        """Sends message to a user"""
         with socket_lock:
             send_message(self.transport, self.create_message(text, username, self.account_name))
             self.handle_answer(get_message(self.transport))
 
     def handle_answer(self, answer):
+        """Handle answer depending on the context"""
         try:
             if 'action' in answer and answer['action'] == ACT_MESSAGE and 'user' in answer and 'to' in answer and \
                     answer['to'] == self.account_name:

@@ -7,6 +7,9 @@ Base = declarative_base()
 
 
 class ClientStorage:
+    """
+    Class that contains ORM classes for DB tables
+    """
     class Contact(Base):
         __tablename__ = 'contacts'
         id = Column(Integer, primary_key=True)
@@ -49,6 +52,7 @@ class ClientStorage:
         self.session = Session(bind=self.engine)
 
     def get_history(self, current_chat):
+        """Returns messages history for user and current chat"""
         messages_from = self.session.query(self.Message).filter_by(from_=current_chat)
         messages_to = self.session.query(self.Message).filter_by(to=current_chat)
         messages_from = [(m.from_, m.to, m.timestamp, m.text) for m in messages_from]
@@ -58,23 +62,28 @@ class ClientStorage:
         return history
 
     def get_contacts(self):
+        """Returns user's contacts"""
         contacts = self.session.query(self.Contact).all()
         return [contact.username for contact in contacts]
 
-    def is_contact_exists(self, username):
+    def is_contact_exists(self, username: str):
+        """Checks if user is in the contacts list"""
         contact_exists = self.session.query(self.Contact).filter_by(username=username).first()
         return contact_exists
 
     def add_contact(self, username: str):
+        """Add user to contacts list"""
         contact = self.Contact(username=username)
         self.session.add(contact)
         self.session.commit()
 
     def delete_contact(self, username: str):
+        """Delete user from contacts list"""
         self.session.query(self.Contact).filter_by(username=username).delete()
         self.session.commit()
 
     def create_message(self, text: str, timestamp, from_=None, to=None):
+        """Create JIM-message for sending"""
         if from_:
             if not self.is_contact_exists(from_) and from_ != to and self.username != from_:
                 self.add_contact(from_)
@@ -86,13 +95,16 @@ class ClientStorage:
         self.session.commit()
 
     def get_messages(self):
+        """Returns all messages from DB"""
         return self.session.query(self.Message).all()
 
     def delete_all_contacts(self):
+        """Deletes all user's contacts"""
         self.session.query(self.Contact).delete()
         self.session.commit()
 
     def delete_all_messages(self):
+        """Deletes all messages"""
         self.session.query(self.Message).delete()
         self.session.commit()
 

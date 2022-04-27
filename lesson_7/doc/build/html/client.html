@@ -63,6 +63,7 @@
 <dt class="sig sig-object py" id="client.client_database.ClientStorage">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">client.client_database.</span></span><span class="sig-name descname"><span class="pre">ClientStorage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#client.client_database.ClientStorage" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class that contains ORM classes for DB tables</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="client.client_database.ClientStorage.Contact">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Contact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#client.client_database.ClientStorage.Contact" title="Permalink to this definition">¶</a></dt>
@@ -113,47 +114,56 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="client.client_database.ClientStorage.add_contact">
 <span class="sig-name descname"><span class="pre">add_contact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#client.client_database.ClientStorage.add_contact" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Add user to contacts list</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="client.client_database.ClientStorage.create_message">
 <span class="sig-name descname"><span class="pre">create_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timestamp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">from_</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#client.client_database.ClientStorage.create_message" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Create JIM-message for sending</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="client.client_database.ClientStorage.delete_all_contacts">
 <span class="sig-name descname"><span class="pre">delete_all_contacts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#client.client_database.ClientStorage.delete_all_contacts" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Deletes all user’s contacts</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="client.client_database.ClientStorage.delete_all_messages">
 <span class="sig-name descname"><span class="pre">delete_all_messages</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#client.client_database.ClientStorage.delete_all_messages" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Deletes all messages</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="client.client_database.ClientStorage.delete_contact">
 <span class="sig-name descname"><span class="pre">delete_contact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#client.client_database.ClientStorage.delete_contact" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Delete user from contacts list</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="client.client_database.ClientStorage.get_contacts">
 <span class="sig-name descname"><span class="pre">get_contacts</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#client.client_database.ClientStorage.get_contacts" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Returns user’s contacts</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="client.client_database.ClientStorage.get_history">
 <span class="sig-name descname"><span class="pre">get_history</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">current_chat</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#client.client_database.ClientStorage.get_history" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Returns messages history for user and current chat</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="client.client_database.ClientStorage.get_messages">
 <span class="sig-name descname"><span class="pre">get_messages</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#client.client_database.ClientStorage.get_messages" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Returns all messages from DB</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="client.client_database.ClientStorage.is_contact_exists">
-<span class="sig-name descname"><span class="pre">is_contact_exists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#client.client_database.ClientStorage.is_contact_exists" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">is_contact_exists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#client.client_database.ClientStorage.is_contact_exists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if user is in the contacts list</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -164,30 +174,23 @@
 <dt class="sig sig-object py" id="client.client_transport.ClientTransport">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">client.client_transport.</span></span><span class="sig-name descname"><span class="pre">ClientTransport</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">database</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#client.client_transport.ClientTransport" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">threading.Thread</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtCore.QObject</span></code></p>
+<p>Class for interaction with DB</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="client.client_transport.ClientTransport.add_contact">
 <span class="sig-name descname"><span class="pre">add_contact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#client.client_transport.ClientTransport.add_contact" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Adds user to a contacts list</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="client.client_transport.ClientTransport.connection_init">
 <span class="sig-name descname"><span class="pre">connection_init</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">port</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ip</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#client.client_transport.ClientTransport.connection_init" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Trying to connect to a server</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="client.client_transport.ClientTransport.connection_lost">
 <span class="sig-name descname"><span class="pre">connection_lost</span></span><a class="headerlink" href="#client.client_transport.ClientTransport.connection_lost" title="Permalink to this definition">¶</a></dt>
-<dd><p>pyqtSignal(<a href="#id1"><span class="problematic" id="id2">*</span></a>types, name: str = …, revision: int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
-<p>types is normally a sequence of individual types.  Each type is either a
-type object or a string that is the name of a C++ type.  Alternatively
-each type could itself be a sequence of types each describing a different
-overloaded signal.
-name is the optional C++ name of the signal.  If it is not specified then
-the name of the class attribute that is bound to the signal is used.
-revision is the optional revision of the signal that is exported to QML.
-If it is not specified then 0 is used.
-arguments is the optional sequence of the names of the signal’s arguments.</p>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="client.client_transport.ClientTransport.create_contact_edit_message">
@@ -222,32 +225,25 @@ arguments is the optional sequence of the names of the signal’s arguments.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="client.client_transport.ClientTransport.del_contact">
 <span class="sig-name descname"><span class="pre">del_contact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">user</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#client.client_transport.ClientTransport.del_contact" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Deletes user from a contacts list</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="client.client_transport.ClientTransport.get_clients">
 <span class="sig-name descname"><span class="pre">get_clients</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#client.client_transport.ClientTransport.get_clients" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Returns clients list from a server</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="client.client_transport.ClientTransport.handle_answer">
 <span class="sig-name descname"><span class="pre">handle_answer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">answer</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#client.client_transport.ClientTransport.handle_answer" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Handle answer depending on the context</p>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="client.client_transport.ClientTransport.new_message">
 <span class="sig-name descname"><span class="pre">new_message</span></span><a class="headerlink" href="#client.client_transport.ClientTransport.new_message" title="Permalink to this definition">¶</a></dt>
-<dd><p>pyqtSignal(<a href="#id3"><span class="problematic" id="id4">*</span></a>types, name: str = …, revision: int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
-<p>types is normally a sequence of individual types.  Each type is either a
-type object or a string that is the name of a C++ type.  Alternatively
-each type could itself be a sequence of types each describing a different
-overloaded signal.
-name is the optional C++ name of the signal.  If it is not specified then
-the name of the class attribute that is bound to the signal is used.
-revision is the optional revision of the signal that is exported to QML.
-If it is not specified then 0 is used.
-arguments is the optional sequence of the names of the signal’s arguments.</p>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="client.client_transport.ClientTransport.print_help">
@@ -257,22 +253,20 @@ arguments is the optional sequence of the names of the signal’s arguments.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="client.client_transport.ClientTransport.run">
 <span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#client.client_transport.ClientTransport.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method representing the thread’s activity.</p>
-<p>You may override this method in a subclass. The standard run() method
-invokes the callable object passed to the object’s constructor as the
-target argument, if any, with sequential and keyword arguments taken
-from the args and kwargs arguments, respectively.</p>
+<dd><p>Main loop for this class. Getting messages and handle them</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="client.client_transport.ClientTransport.send_message_to_user">
 <span class="sig-name descname"><span class="pre">send_message_to_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#client.client_transport.ClientTransport.send_message_to_user" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Sends message to a user</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="client.client_transport.ClientTransport.shutdown">
 <span class="sig-name descname"><span class="pre">shutdown</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#client.client_transport.ClientTransport.shutdown" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Gracefully closes connections</p>
+</dd></dl>
 
 </dd></dl>
 
