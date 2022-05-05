@@ -1,0 +1,2 @@
+class UnsafePortError(Exception):
+    pass
